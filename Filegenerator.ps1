@@ -17,7 +17,7 @@ $Loglines= foreach ($i in (1..50000)) {
     $operator = $rnd.Next(101, 121)
     $batch = $rnd.Next(1000, 1101)
     $status = $statusCodes[$rnd.Next($statuscodes.count)]
-    $machineTemp = [math]::Round(($rnd.Next(60, 110)) + (Get-Random),2)
+    $machineTemp = [math]::Round(($rnd.Next(60, 110)) + ($rnd.next()),2)
     $load = $rnd.Next(0, 101)
  
     if (($rnd.Next(1, 8)) -eq 4) {
@@ -32,7 +32,7 @@ $Loglines= foreach ($i in (1..50000)) {
         "INFO; $timestamp; $plc; System running normally; ; $status; $operator; $batch; $machineTemp; $load"
     }
 }
- 
-Set-Content -Path $bigFileName -Value $logLines
-Write-Output "PLC log file generated."
+
+Set-Content -Path $bigFileName -Value $Loglines
+#write-Output "PLC log file generated."
 }
