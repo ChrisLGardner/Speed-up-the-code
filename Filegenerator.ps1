@@ -10,8 +10,10 @@ $errorTypes = @(
 $statusCodes = 'OK','WARN','ERR'
 $rnd = [Random]::new()
 $Date = [DateTime]::Now
- 
-$Loglines= foreach ($i in (1..50000)) {
+$fs = [io.file]::CreateText($bigFileName)
+
+
+for ($i=0; $i -lt 50000; $i++) {
     $timestamp = $date.AddSeconds(-$i).ToString("yyyy-MM-dd HH:mm:ss")
     $plc =  $plcnames[$rnd.next($plcNames.count)]
     $operator = $rnd.Next(101, 121)
@@ -24,15 +26,17 @@ $Loglines= foreach ($i in (1..50000)) {
         $errorType = $errorTypes[$rnd.next($errorTypes.count)]
         if ($errorType -eq 'Sandextrator overload') {
             $value = ($rnd.Next(1, 11))
-            "ERROR; $timestamp; $plc; $errorType; $value; $status; $operator; $batch; $machineTemp; $load"
+            $fs.WriteLine("ERROR; $timestamp; $plc; $errorType; $value; $status; $operator; $batch; $machineTemp; $load")
         } else {
-            "ERROR; $timestamp; $plc; $errorType; ; $status; $operator; $batch; $machineTemp; $load"
+            $fs.WriteLine("ERROR; $timestamp; $plc; $errorType; ; $status; $operator; $batch; $machineTemp; $load")
         }
     } else {
-        "INFO; $timestamp; $plc; System running normally; ; $status; $operator; $batch; $machineTemp; $load"
+        $fs.writeline("INFO; $timestamp; $plc; System running normally; ; $status; $operator; $batch; $machineTemp; $load")
     }
 }
 
-Set-Content -Path $bigFileName -Value $Loglines
-#write-Output "PLC log file generated."
+$fs.Dispose()
+#Write-Output "PLC log file generated."
 }
+
+#remove-item ./plc_log.txt
